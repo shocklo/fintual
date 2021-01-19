@@ -1,0 +1,121 @@
+<html>
+</head>
+<script>
+const stocksPrices = [
+	{    
+		"name": "Braulio Inc",
+		"prices": [    
+        { "year": 2015, "price": 10567 },
+        { "year": 2016, "price": 11000 },   
+        { "year": 2017, "price": 11004 },
+        { "year": 2018, "price": 10989 },
+        { "year": 2019, "price": 11500 },
+        { "year": 2020, "price": 12489 }
+      ]
+    },
+    {
+      "name": "Fintual",
+      "prices": [       
+        { "year": 2015, "price": 10047 },
+        { "year": 2016, "price": 11046 },
+        { "year": 2017, "price": 10449 },
+        { "year": 2018, "price": 12035 },
+        { "year": 2019, "price": 12478 },
+        { "year": 2020, "price": 13964 }
+      ]
+    }  
+];
+
+
+
+class Stocks {
+
+  constructor() {
+    this.stocks = stocksPrices;
+  }
+
+  getPrice(year) {
+	let totalValue = 0;
+    for (let stock of this.stocks) {
+      for (let value of stock.prices) {
+        if (year == value.year) {
+          totalValue = totalValue + value.price;         
+        }
+      }
+    }
+    return totalValue;
+  }
+} 
+
+class Portfolio {
+
+  profit(from, to) { 
+      const stocks = new Stocks(); 
+	  let finalProfit = 0;	  
+	  let initialInvestment = 0;	  
+	  let years = 0;;
+	  for (let i = Number(from); i <= Number(to); i++) {		
+		stocks.getPrice(i); 				
+		if(years!=0){
+			finalProfit = finalProfit + (stocks.getPrice(i) - stocks.getPrice(i-1));
+		}else{
+			initialInvestment = stocks.getPrice(i);
+		}
+		years++;	
+		}
+	let totalInvestmentReturn = ((stocks.getPrice(to)-stocks.getPrice(from))/stocks.getPrice(from));		
+	let potencia = 1/years;
+	let annualizedReturn = (Math.pow((1+totalInvestmentReturn), potencia))-1;
+	
+	return([Math.round(annualizedReturn*100)/100,finalProfit]);
+	}
+}
+  
+
+	const portfolio = new Portfolio();
+	
+	function getProfit(){
+		let yFrom = document.getElementById("yFrom").value;
+		let yTo = document.getElementById("yTo").value;
+		if(Number(yFrom) >= Number(yTo)){
+			alert("Year to must be higher than year from");
+		}else{
+			let results = portfolio.profit(yFrom,yTo);
+			console.log(results);
+			document.getElementById("annualizedReturn").value = results[0]+"%";
+			document.getElementById("profit").value = results[1];
+		}
+		
+	}
+</script>
+</head>
+<body>
+	Year from<br>
+	<select id="yFrom">
+	  <option value="2015">2015</option>
+	  <option value="2016">2016</option>
+	  <option value="2017">2017</option>
+	  <option value="2018">2018</option>
+	  <option value="2019">2019</option>
+	  <option value="2020">2020</option>
+	</select>
+	<br><br>
+	Year to
+	<br><select id="yTo">
+	  <option value="2015">2015</option>
+	  <option value="2016">2016</option>
+	  <option value="2017">2017</option>
+	  <option value="2018">2018</option>
+	  <option value="2019">2019</option>
+	  <option value="2020">2020</option>
+	</select>
+	<br><br>
+	<button onClick="getProfit();">
+		Check Profit
+	</button><br><br>
+	Annualized return:
+	<input type="text" id="annualizedReturn" disabled><br><br>
+	Profit :
+	<input type="text" id="profit" disabled><br><br>
+</body>
+</html>
